@@ -44,3 +44,7 @@ jobs:
         id: my_gtest
         run: ./gtest_version
         if: always()
+        - name: Check helloworld_cli
+        id: check_helloworld_cli
+        run: ./helloworld_cli
+        if: always()
