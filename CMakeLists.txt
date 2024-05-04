@@ -47,11 +47,12 @@ if(WITH_BOOST_TEST)
 endif()
 
 if(WITH_G_TEST)
-    find_package(GTest REQUIRED)
-
+    find_package(GTest)
+   
     if(GTest_FOUND)
         include_directories(${GTEST_INCLUDE_DIRS})
     else()
+        cmake_policy(SET CMP0135 NEW)
         include(FetchContent)
         FetchContent_Declare(
             googletest
