@@ -3,7 +3,8 @@ name: 'C++ CI'
 on:
   push:
     branches:
-      - main     
+      - main
+      - with_gtest     
 
 jobs:
   build:
@@ -14,7 +15,8 @@ jobs:
         with:
           submodules: true
       - run: sudo apt-get update && sudo apt-get install libboost-test-dev -y
-      - run: cmake . -DPATCH_VERSION=${{ github.run_number }} -DWITH_BOOST_TEST=ON
+      - run: sudo apt-get update && sudo apt-get install libgtest-dev -y
+      - run: cmake . -DPATCH_VERSION=${{ github.run_number }} -DWITH_BOOST_TEST=ON -DWITH_G_TEST=ON
       - run: cmake --build .
       - run: cmake --build . --target test
       - run: cmake --build . --target package
@@ -38,3 +40,11 @@ jobs:
           asset_path: ./helloworld-0.0.${{ github.run_number }}-Linux.deb
           asset_name: helloworld-0.0.${{ github.run_number }}-Linux.deb
           asset_content_type: application/vnd.debian.binary-package
+      - name: My Gtest
+        id: my_gtest
+        run: ./gtest_version
+        if: always()
+      - name: Check helloworld_cli
+        id: check_helloworld_cli
+        run: ./helloworld_cli
+        if: always()

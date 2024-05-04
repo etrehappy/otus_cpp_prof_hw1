@@ -5,7 +5,8 @@ set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 
 project(helloworld VERSION ${PROJECT_VESRION})
 
-option(WITH_BOOST_TEST "Whether to build Boost test" ON)
+option(WITH_BOOST_TEST "Whether to build Boost test" OFF)
+option(WITH_G_TEST "Whether to build Google test" ON)
 
 configure_file(version.h.in version.h)
 
@@ -45,6 +46,34 @@ if(WITH_BOOST_TEST)
     )
 endif()
 
+if(WITH_G_TEST)
+    find_package(GTest)
+   
+    if(GTest_FOUND)
+        include_directories(${GTEST_INCLUDE_DIRS})
+    else()
+        cmake_policy(SET CMP0135 NEW)
+        include(FetchContent)
+        FetchContent_Declare(
+            googletest
+            URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip           
+        )
+        #For Windows: Prevent overriding the parent project's compiler/linker settings
+        set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+        FetchContent_MakeAvailable(googletest)
+    endif()
+
+    add_executable(gtest_version gtest_version.cpp)
+
+    target_link_libraries(gtest_version PRIVATE 
+        gtest 
+        gtest_main
+        helloworld
+    )
+
+endif()
+
+
 if (MSVC)
     target_compile_options(helloworld_cli PRIVATE
         /W4
@@ -54,6 +83,11 @@ if (MSVC)
     )
     if(WITH_BOOST_TEST)
         target_compile_options(test_version PRIVATE
+            /W4
+        )
+    endif()
+    if(WITH_G_TEST)
+        target_compile_options(gtest_version PRIVATE
             /W4
         )
     endif()
@@ -83,4 +117,9 @@ include(CPack)
 if(WITH_BOOST_TEST)
     enable_testing()
     add_test(test_version test_version)
+endif()
+
+if(WITH_G_TEST)
+    enable_testing()
+    add_test(gtest_version gtest_version)
 endif()
