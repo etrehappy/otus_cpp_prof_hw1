@@ -4,6 +4,7 @@ name: CMake on multiple platforms
 
 on:
   workflow_dispatch:
+  push:
 
 jobs:
   build:
