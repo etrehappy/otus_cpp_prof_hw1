@@ -1,6 +1,6 @@
 # This starter workflow is for a CMake project running on multiple platforms. There is a different starter workflow if you just want a single platform.
 # See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-single-platform.yml
-name: CMake on multiple platforms
+name: Version
 
 on:
   workflow_dispatch: 
@@ -46,7 +46,8 @@ jobs:
 
     - name: Print OS version and architecture (Windows)
       run: |
-        echo "Operating System: $(cmd /c ver)"
-        echo "Architecture: $(wmic os get osarchitecture)"
+        echo Operating System: %OS%
+        ver
+        echo Architecture: %PROCESSOR_ARCHITECTURE%
       shell: cmd
       if: matrix.os == 'windows-latest'
