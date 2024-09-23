@@ -36,15 +36,17 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Print OS version
+    - name: Print OS version and architecture (Linux/macOS)
       run: |
         echo "Operating System: $(uname -a)"
-        echo "OS Version: $(lsb_release -a || sw_vers || ver)"
+        echo "OS Version: $(lsb_release -a || sw_vers)"
+        echo "Architecture: $(uname -m)"
       shell: bash
       if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
 
-    - name: Print OS version (Windows)
+    - name: Print OS version and architecture (Windows)
       run: |
         echo "Operating System: $(cmd /c ver)"
+        echo "Architecture: $(wmic os get osarchitecture)"
       shell: cmd
       if: matrix.os == 'windows-latest'
